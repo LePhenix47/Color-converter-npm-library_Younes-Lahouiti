@@ -3,7 +3,7 @@ import {
   HueSaturationValue,
   HueWhitenessBlackness,
   RedGreenBlue,
-} from "./color-types.variables";
+} from "./variables/color-types.variables";
 
 /**
  * Abstract class containing conversion methods for various color models.
@@ -33,7 +33,7 @@ class AbstractConversionMethods {
     const colorArgumentIsInvalid: boolean =
       color?.length < 6 || color?.length > 7;
     if (colorArgumentIsInvalid) {
-      console.error(
+      throw new Error(
         `Error: Unexpected color argument length passed, was expecting a 6 or 7 characters long string but instead got ${color.length}`
       );
     }
@@ -82,7 +82,7 @@ class AbstractConversionMethods {
       blue < 0 ||
       blue > 255;
     if (argumentsAreInvalid) {
-      console.error(
+      throw new Error(
         `Invalid RGB color values. Expected integers between 0 and 255, but received: red=${red}, green=${green}, blue=${blue}`
       );
     }

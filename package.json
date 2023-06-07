@@ -4,7 +4,8 @@
   "description": "This is a versatile color conversion library for JavaScript. It provides a convenient way to convert color values between different color models, including RGB, HEX, HSL, HWB, and HSV. With [Library Name], you can effortlessly convert colors, normalize them to a consistent format, and retrieve color values in various color models.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --watch --stats-error-details"
   },
   "repository": {
     "type": "git",
