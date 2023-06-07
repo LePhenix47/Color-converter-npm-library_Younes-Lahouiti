@@ -15,9 +15,7 @@
     "url": "git+https://github.com/LePhenix47/Color-converter-npm-library_Younes-Lahouiti.git"
   },
   "files": [
-    "dist/lib/es6/classes/color-conversion.classes.js",
-    "dist/lib/es6/classes/color-conversion.classes.d.js",
-    "dist/lib/es6/variables/**"
+    "dist/lib/**/*"
   ],
   "keywords": [
     "color",
