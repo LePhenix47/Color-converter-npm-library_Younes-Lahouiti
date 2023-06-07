@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --watch --stats-error-details",
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm publish --access=public"
   },
   "repository": {
     "type": "git",
