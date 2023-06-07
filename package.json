@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --watch --stats-error-details"
+    "dev": "webpack --watch --stats-error-details",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
