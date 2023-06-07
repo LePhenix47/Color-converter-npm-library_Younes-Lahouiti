@@ -14,6 +14,9 @@
     "type": "git",
     "url": "git+https://github.com/LePhenix47/Color-converter-npm-library_Younes-Lahouiti.git"
   },
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "color",
     "conversion"
