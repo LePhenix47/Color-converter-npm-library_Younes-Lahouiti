@@ -1,6 +1,5 @@
 # Development and build files
 node_modules/
-dist/
 build/
 *.log
 *.md
