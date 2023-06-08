@@ -11,6 +11,7 @@
     - [Creating Color Objects](#creating-color-objects)
     - [Converting Color Models](#converting-color-models)
   - [Available Conversion Methods](#available-conversion-methods)
+  - [Miscellaneous](#miscellaneous)
   - [Conclusion](#conclusion)
 
 ## Introduction
@@ -90,6 +91,30 @@ console.log(allModels);
 ```
 
 The `allModels` variable will contain an array of strings representing the available color models
+
+## Miscellaneous
+
+ASCII tree of the project:
+src/
+├─ variables/
+│  ├─ color-types.variables.ts
+├─ classes/
+│  ├─ color-conversion.classes.ts
+├─ index.ts
+dist/
+├─ lib/
+│  ├─ es6/
+│  ├─ commonjs/
+test/
+├─ es6.js
+├─ commonjs.js
+package.json
+package-lock.json
+README.md
+tsconfig.es5.json
+tsconfig.json
+.gitignore
+.npmignore
 
 ## Conclusion
 
