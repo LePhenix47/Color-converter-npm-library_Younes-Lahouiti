@@ -95,6 +95,8 @@ The `allModels` variable will contain an array of strings representing the avail
 ## Miscellaneous
 
 ASCII tree of the project:
+
+```md
 src/
 ├─ variables/
 │  ├─ color-types.variables.ts
@@ -104,7 +106,15 @@ src/
 dist/
 ├─ lib/
 │  ├─ es6/
-│  ├─ commonjs/
+│  │  ├─ index.js
+│  │  ├─ index.d.ts
+│  │  ├─ variables/
+│  │  │  ├─ color-types.variables.js
+│  │  │  ├─ color-types.variables.d.ts
+│  │  ├─ classes/
+│  │  │  ├─ color-conversion.classes.js
+│  │  │  ├─ color-conversion.classes.d.ts
+│  ├─ commonjs/ # Same folder structure as es6's 
 test/
 ├─ es6.js
 ├─ commonjs.js
@@ -115,6 +125,7 @@ tsconfig.es5.json
 tsconfig.json
 .gitignore
 .npmignore
+```
 
 ## Conclusion
 
