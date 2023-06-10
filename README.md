@@ -62,8 +62,11 @@ const hsvColor = { hue: 200, saturation: 28, value: 35 };
 On the other hand, you can specify the hexadecimal value as a string, with or without the '#' symbol. For example:
 
 ```js
-const color = "#0000FF"; // Hexadecimal color with the '#' symbol
-const color2 = "AA83F5"; // Hexadecimal color without the '#' symbol
+const colorHex1 = "#0000FF"; // Hexadecimal color with the '#' symbol
+const colorHex2 = "AA83F5"; // Hexadecimal color without the '#' symbol
+
+const colorName1 = "rebeccapurple" //All lowercase
+const colorName2 = "DarkBlue" //In titlecase
 ```
 
 ### Converting Color Models
