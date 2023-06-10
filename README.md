@@ -8,6 +8,7 @@
   - [Installation](#installation)
   - [Usage](#usage)
     - [Importing the Library](#importing-the-library)
+    - [Supported color models](#supported-color-models)
     - [Creating Color Objects](#creating-color-objects)
     - [Converting Color Models](#converting-color-models)
   - [Available Conversion Methods](#available-conversion-methods)
@@ -42,9 +43,14 @@ To use `@lephenix47/color-converter` in your project, you need to import the nec
 import { ColorConverter } from '@lephenix47/color-converter';
 ```
 
+### Supported color models
+
+Currently the library supports 7 colors models:
+`color names`, `RGB`, `HEX`, `HSL`, `HWB`, `HSV` and `CMYK`
+
 ### Creating Color Objects
 
-To represent colors using the `color names`, `RGB`, `HEX`, `HSL`, `HWB`, `HSV` and `CMYK` color models, you can use JavaScript objects. Each object should contain the appropriate properties for the corresponding color model. Here's an example:
+To represent colors using the different color models, you can use JavaScript objects. Each object should contain the appropriate properties for the corresponding color model. Here's an example:
 
 ```js
 const rgbColor = { red: 255, green: 0, blue: 0 };
