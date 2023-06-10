@@ -25,7 +25,7 @@ export class AbstractConversionMethods {
     const hexadecimalGreen: string = green.toString(16);
     const hexadecimalBlue: string = blue.toString(16);
 
-    return `#${hexadecimalRed}${hexadecimalGreen}${hexadecimalBlue};`;
+    return `#${hexadecimalRed}${hexadecimalGreen}${hexadecimalBlue}`;
   }
 
   /**
@@ -410,7 +410,9 @@ export class AbstractConversionMethods {
     if (argumentIsInvalid) {
       throw new Error(
         `Argument passed is invalid: ${
-          typeof color !== "string" ? "not a string" : "has wrong hex length"
+          typeof color !== "string"
+            ? "not a string"
+            : `has wrong hex length: ${color.length}`
         }`
       );
     }

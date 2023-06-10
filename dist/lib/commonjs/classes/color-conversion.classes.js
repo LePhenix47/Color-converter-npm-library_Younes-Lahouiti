@@ -333,7 +333,9 @@ var AbstractConversionMethods = /** @class */ (function () {
     AbstractConversionMethods.prototype.fromHexToName = function (color) {
         var argumentIsInvalid = typeof color !== "string" || color.length < 6 || color.length > 7;
         if (argumentIsInvalid) {
-            throw new Error("Argument passed is invalid: ".concat(typeof color !== "string" ? "not a string" : "has wrong hex length"));
+            throw new Error("Argument passed is invalid: ".concat(typeof color !== "string"
+                ? "not a string"
+                : "has wrong hex length: ".concat(color.length)));
         }
         var normalizedColor = color.toLowerCase();
         normalizedColor = normalizedColor.includes("#")
