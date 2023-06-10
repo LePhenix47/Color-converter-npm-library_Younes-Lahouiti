@@ -44,7 +44,7 @@ import { ColorConverter } from '@lephenix47/color-converter';
 
 ### Creating Color Objects
 
-To represent colors using the `RGB`, `HSL`, `HWB`, and `HSV` color models, you can use JavaScript objects. Each object should contain the appropriate properties for the corresponding color model. Here's an example:
+To represent colors using the `color names`, `RGB`, `HEX`, `HSL`, `HWB`, `HSV` and `CMYK` color models, you can use JavaScript objects. Each object should contain the appropriate properties for the corresponding color model. Here's an example:
 
 ```js
 const rgbColor = { red: 255, green: 0, blue: 0 };
