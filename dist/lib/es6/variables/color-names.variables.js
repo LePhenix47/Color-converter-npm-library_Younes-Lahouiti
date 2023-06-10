@@ -321,7 +321,7 @@ function setColorArrayValues() {
         var colorHex = colorHexForNames[i];
         var nameColorObject = {
             name: colorName,
-            value: colorHex,
+            hexValue: colorHex,
         };
         colorArray.push(nameColorObject);
     }

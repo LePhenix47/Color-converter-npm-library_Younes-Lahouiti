@@ -16,6 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColorConverter = exports.AbstractConversionMethods = void 0;
+var color_names_variables_1 = require("../variables/color-names.variables");
 /**
  * Abstract class containing conversion methods for various color models.
  */
@@ -122,12 +123,12 @@ var AbstractConversionMethods = /** @class */ (function () {
             }
         }
         // Round the values and multiply saturation and lightness by 100
-        var roundedHue = Math.round(hue * 360);
+        var roundedHue = Math.round(hue * 360) % 360;
         var roundedSaturation = Math.round(saturation * 100);
         var roundedLightness = Math.round(lightness * 100);
         // Return the HSL color value as a string
         return {
-            hue: roundedHue % 360,
+            hue: roundedHue,
             saturation: roundedSaturation,
             lightness: roundedLightness,
         };
@@ -142,7 +143,6 @@ var AbstractConversionMethods = /** @class */ (function () {
         var normalizedSaturation = saturation / 100;
         var normalizedLightness = lightness / 100;
         function calculateComponent(colorValue) {
-            // log({ normalizedSaturation, normalizedLightness });
             var colorComponent = (colorValue + hue / 30) % 12;
             var chroma = normalizedSaturation *
                 Math.min(normalizedLightness, 1 - normalizedLightness);
@@ -291,6 +291,11 @@ var AbstractConversionMethods = /** @class */ (function () {
             blue: Math.round(normalizedBlue * 255),
         };
     };
+    /**
+     * Converts an RGB color value to CMYK color representation.
+     * @param {RedGreenBlue} color - The RGB color object.
+     * @returns {CyanMagentaYellowKey} The CMYK color object.
+     */
     AbstractConversionMethods.prototype.fromRgbToCmyk = function (color) {
         var red = color.red, green = color.green, blue = color.blue;
         var normalizedRed = red / 255;
@@ -303,6 +308,11 @@ var AbstractConversionMethods = /** @class */ (function () {
         var key = Math.round(1 - maxValue);
         return { cyan: cyan, magenta: magenta, yellow: yellow, key: key };
     };
+    /**
+     * Converts a CMYK color value to RGB color representation.
+     * @param {CyanMagentaYellowKey} color - The CMYK color object.
+     * @returns {RedGreenBlue} The RGB color object.
+     */
     AbstractConversionMethods.prototype.fromCymkToRgb = function (color) {
         var cyan = color.cyan, magenta = color.magenta, yellow = color.yellow, key = color.key;
         var normalizedCyan = cyan / 100;
@@ -314,6 +324,45 @@ var AbstractConversionMethods = /** @class */ (function () {
         var green = Math.round(1 - normalizedMagenta) * maxRgb * 255;
         var blue = Math.round(1 - normalizedYellow) * maxRgb * 255;
         return { red: red, green: green, blue: blue };
+    };
+    /**
+     * Converts a hexadecimal color value to the corresponding color name.
+     * @param {string} color - The hexadecimal color value.
+     * @returns {string | null} The corresponding color name, or null if not found.
+     */
+    AbstractConversionMethods.prototype.fromHexToName = function (color) {
+        var argumentIsInvalid = typeof color !== "string" || color.length < 6 || color.length > 7;
+        if (argumentIsInvalid) {
+            throw new Error("Argument passed is invalid: ".concat(typeof color !== "string" ? "not a string" : "has wrong hex length"));
+        }
+        var normalizedColor = color.toLowerCase();
+        normalizedColor = normalizedColor.includes("#")
+            ? normalizedColor.slice(1)
+            : normalizedColor;
+        var nameColorObject = color_names_variables_1.colorArray.find(function (currentNameColorObject) {
+            var hexValue = currentNameColorObject.hexValue;
+            var normalizedHexValue = hexValue.toLowerCase();
+            return normalizedColor === normalizedHexValue;
+        }) || null;
+        return nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.name;
+    };
+    /**
+     * Converts a color name to the corresponding hexadecimal color value.
+     * @param {string} color - The color name.
+     * @returns {string | null} The corresponding hexadecimal color value, or null if not found.
+     */
+    AbstractConversionMethods.prototype.fromNameToHex = function (color) {
+        var argumentIsInvalid = typeof color !== "string";
+        if (argumentIsInvalid) {
+            throw new Error("Argument passed is invalid: not a color name string");
+        }
+        var normalizedColor = color.toLowerCase();
+        var nameColorObject = color_names_variables_1.colorArray.find(function (currentNameColorObject) {
+            var name = currentNameColorObject.name;
+            var normalizedName = name.toLowerCase();
+            return normalizedColor === normalizedName;
+        }) || null;
+        return nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.hexValue;
     };
     return AbstractConversionMethods;
 }());
@@ -330,9 +379,8 @@ var ColorConverter = /** @class */ (function (_super) {
      */
     function ColorConverter(currentModel, color) {
         var _this = _super.call(this) || this;
-        _this.color = color;
-        _this.normalizedColor;
-        _this.currentModel = currentModel;
+        _this.setNewColor(color, currentModel);
+        _this.normalizedColor = { red: 0, blue: 0, green: 0 };
         _this.normalizeToRgb();
         return _this;
     }
@@ -367,6 +415,8 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "name": {
+                var hexColor = this.fromNameToHex(this.color);
+                this.normalizedColor = this.fromHexToRgb(hexColor);
                 break;
             }
             default: {
@@ -375,11 +425,20 @@ var ColorConverter = /** @class */ (function (_super) {
         }
     };
     /**
+     * Sets a new color + target model to the instance class
+     */
+    ColorConverter.prototype.setNewColor = function (newColor, newTargetModel) {
+        this.color = newColor;
+        this.currentModel = newTargetModel;
+        this.normalizeToRgb();
+    };
+    /**
      * Converts the color to the specified color model.
      * @param {string} targetModel - The target color model.
      * @returns {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} The converted color value.
      */
     ColorConverter.prototype.convertTo = function (targetModel) {
+        targetModel = targetModel.toLowerCase();
         switch (targetModel) {
             case "hex": {
                 return this.fromRgbToHex(this.normalizedColor);
@@ -397,9 +456,11 @@ var ColorConverter = /** @class */ (function (_super) {
                 return this.fromRgbToHsv(this.normalizedColor);
             }
             case "cmyk": {
+                return this.fromRgbToCmyk(this.normalizedColor);
             }
             case "name": {
-                break;
+                var hexColor = this.fromRgbToHex(this.normalizedColor);
+                return this.fromHexToName(hexColor);
             }
             default: {
                 throw new Error("Invalid color model.");
@@ -411,12 +472,21 @@ var ColorConverter = /** @class */ (function (_super) {
      * @returns {Array} An array containing the color values in different color models.
      */
     ColorConverter.prototype.getAllColorModels = function () {
+        var hexColor = this.fromRgbToHex(this.normalizedColor);
+        var rgbColor = this.normalizedColor;
+        var hslColor = this.fromRgbToHsl(this.normalizedColor);
+        var hwbColor = this.fromRgbToHwb(this.normalizedColor);
+        var hsvColor = this.fromRgbToHsv(this.normalizedColor);
+        var cmykColor = this.fromRgbToCmyk(this.normalizedColor);
+        var nameColor = this.fromHexToName(hexColor);
         return [
-            this.fromRgbToHex(this.normalizedColor),
-            this.normalizedColor,
-            this.fromRgbToHsl(this.normalizedColor),
-            this.fromRgbToHwb(this.normalizedColor),
-            this.fromRgbToHsv(this.normalizedColor),
+            nameColor,
+            hexColor,
+            rgbColor,
+            hslColor,
+            hwbColor,
+            hsvColor,
+            cmykColor,
         ];
     };
     return ColorConverter;

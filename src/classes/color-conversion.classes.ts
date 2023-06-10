@@ -472,11 +472,10 @@ export class ColorConverter extends AbstractConversionMethods {
    */
   constructor(currentModel: string, color: ColorRepresentation) {
     super();
-    this.color = color as any;
 
-    this.normalizedColor;
+    this.setNewColor(color, currentModel);
 
-    this.currentModel = currentModel;
+    this.normalizedColor = { red: 0, blue: 0, green: 0 };
 
     this.normalizeToRgb();
   }
@@ -485,7 +484,7 @@ export class ColorConverter extends AbstractConversionMethods {
    * Normalizes the color to RGB format to be later convert back into another one
    * @returns {RedGreenBlue} The normalized RGB color value.
    */
-  normalizeToRgb(): RedGreenBlue | void {
+  private normalizeToRgb(): RedGreenBlue | void {
     switch (this.currentModel) {
       case "hex": {
         this.normalizedColor = this.fromHexToRgb(this.color as string);
@@ -533,6 +532,17 @@ export class ColorConverter extends AbstractConversionMethods {
         throw new Error("Invalid color model.");
       }
     }
+  }
+
+  /**
+   * Sets a new color + target model to the instance class
+   */
+  setNewColor(newColor: ColorRepresentation, newTargetModel: string) {
+    this.color = newColor;
+
+    this.currentModel = newTargetModel;
+
+    this.normalizeToRgb();
   }
 
   /**

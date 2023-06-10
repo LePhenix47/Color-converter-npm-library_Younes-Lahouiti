@@ -6,7 +6,8 @@
   "module": "dist/lib/commonjs/index.js",
   "types": "dist/lib/es6/index.d.ts",
   "scripts": {
-    "ts": "tsc && tsc --build tsconfig.es5.json",
+    "ts-cmd": "rmdir /s /q dist && tsc && tsc --build tsconfig.es5.json",
+    "ts-bash": "rm -rf ./dist && tsc && tsc --build tsconfig.es5.json",
     "publish": "npm publish --access=public"
   },
   "repository": {

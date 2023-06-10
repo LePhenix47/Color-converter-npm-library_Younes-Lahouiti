@@ -51,8 +51,30 @@ export declare class AbstractConversionMethods {
      * @returns {RedGreenBlue} The RGB color object.
      */
     fromHsvToRgb(color: HueSaturationValue): RedGreenBlue;
+    /**
+     * Converts an RGB color value to CMYK color representation.
+     * @param {RedGreenBlue} color - The RGB color object.
+     * @returns {CyanMagentaYellowKey} The CMYK color object.
+     */
     fromRgbToCmyk(color: RedGreenBlue): CyanMagentaYellowKey;
+    /**
+     * Converts a CMYK color value to RGB color representation.
+     * @param {CyanMagentaYellowKey} color - The CMYK color object.
+     * @returns {RedGreenBlue} The RGB color object.
+     */
     fromCymkToRgb(color: CyanMagentaYellowKey): RedGreenBlue;
+    /**
+     * Converts a hexadecimal color value to the corresponding color name.
+     * @param {string} color - The hexadecimal color value.
+     * @returns {string | null} The corresponding color name, or null if not found.
+     */
+    fromHexToName(color: string): string | null;
+    /**
+     * Converts a color name to the corresponding hexadecimal color value.
+     * @param {string} color - The color name.
+     * @returns {string | null} The corresponding hexadecimal color value, or null if not found.
+     */
+    fromNameToHex(color: string): string | null;
 }
 /**
  * ColorConverter class that extends AbstractConversionMethods.
@@ -71,7 +93,11 @@ export declare class ColorConverter extends AbstractConversionMethods {
      * Normalizes the color to RGB format to be later convert back into another one
      * @returns {RedGreenBlue} The normalized RGB color value.
      */
-    normalizeToRgb(): RedGreenBlue | void;
+    private normalizeToRgb;
+    /**
+     * Sets a new color + target model to the instance class
+     */
+    setNewColor(newColor: ColorRepresentation, newTargetModel: string): void;
     /**
      * Converts the color to the specified color model.
      * @param {string} targetModel - The target color model.
