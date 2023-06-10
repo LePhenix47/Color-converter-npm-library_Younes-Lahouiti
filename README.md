@@ -57,6 +57,7 @@ const rgbColor = { red: 255, green: 0, blue: 0 };
 const hslColor = { hue: 0, saturation: 100, lightness: 50 };
 const hwbColor = { hue: 120, whiteness: 0, blackness: 0 };
 const hsvColor = { hue: 200, saturation: 28, value: 35 };
+const cmyk = { cyan:0, magenta: 100, yellow: 100, key: 0 };
 ```
 
 On the other hand, you can specify the hexadecimal value as a string, with or without the '#' symbol. For example:

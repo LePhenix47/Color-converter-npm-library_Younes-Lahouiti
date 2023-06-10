@@ -1,13 +1,12 @@
 {
   "name": "@lephenix47/color-converter",
   "version": "1.0.7",
-  "description": "This is a versatile color conversion library for JavaScript. It provides a convenient way to convert color values between different color models, including RGB, HEX, HSL, HWB, and HSV. With @lephenix47/color-converter, you can effortlessly convert colors, normalize them to a consistent format, and retrieve color values in various color models.",
+  "description": "This is a versatile color conversion library for JavaScript. It provides a convenient way to convert color values between different color models, including color names, RGB, HEX, HSL, HWB, HSV and CMYK. With @lephenix47/color-converter, you can effortlessly convert colors, normalize them to a consistent format, and retrieve color values in various color models.",
   "main": "dist/lib/es6/index.js",
   "module": "dist/lib/commonjs/index.js",
   "types": "dist/lib/es6/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "ts": "rm -rf dist/lib && tsc && tsc --build tsconfig.es5.json",
+    "ts": "tsc && tsc --build tsconfig.es5.json",
     "publish": "npm publish --access=public"
   },
   "repository": {

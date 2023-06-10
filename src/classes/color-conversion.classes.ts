@@ -1,8 +1,12 @@
+import { colorArray } from "../variables/color-names.variables";
 import {
   RedGreenBlue,
   HueSaturationLightness,
   HueWhitenessBlackness,
   HueSaturationValue,
+  CyanMagentaYellowKey,
+  NameColor,
+  ColorRepresentation,
 } from "../variables/color-types.variables";
 
 /**
@@ -142,13 +146,13 @@ export class AbstractConversionMethods {
     }
 
     // Round the values and multiply saturation and lightness by 100
-    const roundedHue: number = Math.round(hue * 360);
+    const roundedHue: number = Math.round(hue * 360) % 360;
     const roundedSaturation: number = Math.round(saturation * 100);
     const roundedLightness: number = Math.round(lightness * 100);
 
     // Return the HSL color value as a string
     return {
-      hue: roundedHue % 360,
+      hue: roundedHue,
       saturation: roundedSaturation,
       lightness: roundedLightness,
     };
@@ -166,7 +170,6 @@ export class AbstractConversionMethods {
     const normalizedLightness: number = lightness / 100;
 
     function calculateComponent(colorValue: number): number {
-      // log({ normalizedSaturation, normalizedLightness });
       const colorComponent: number = (colorValue + hue / 30) % 12;
       const chroma: number =
         normalizedSaturation *
@@ -347,38 +350,121 @@ export class AbstractConversionMethods {
       blue: Math.round(normalizedBlue * 255),
     };
   }
+
+  /**
+   * Converts an RGB color value to CMYK color representation.
+   * @param {RedGreenBlue} color - The RGB color object.
+   * @returns {CyanMagentaYellowKey} The CMYK color object.
+   */
+  fromRgbToCmyk(color: RedGreenBlue): CyanMagentaYellowKey {
+    const { red, green, blue } = color;
+
+    const normalizedRed: number = red / 255;
+    const normalizedGreen: number = green / 255;
+    const normalizedBlue: number = blue / 255;
+
+    const maxValue: number = Math.max(
+      normalizedRed,
+      normalizedGreen,
+      normalizedBlue
+    );
+
+    const cyan: number = Math.round(1 - normalizedRed / maxValue) * 100;
+    const magenta: number = Math.round(1 - normalizedGreen / maxValue) * 100;
+    const yellow: number = Math.round(1 - normalizedBlue / maxValue) * 100;
+    const key: number = Math.round(1 - maxValue);
+
+    return { cyan, magenta, yellow, key };
+  }
+
+  /**
+   * Converts a CMYK color value to RGB color representation.
+   * @param {CyanMagentaYellowKey} color - The CMYK color object.
+   * @returns {RedGreenBlue} The RGB color object.
+   */
+  fromCymkToRgb(color: CyanMagentaYellowKey): RedGreenBlue {
+    const { cyan, magenta, yellow, key } = color;
+
+    const normalizedCyan: number = cyan / 100;
+    const normalizedMagenta: number = magenta / 100;
+    const normalizedYellow: number = yellow / 100;
+    const normalizedKey: number = key / 100;
+
+    const maxRgb: number = 1 - normalizedKey;
+
+    const red: number = Math.round(1 - normalizedCyan) * maxRgb * 255;
+    const green: number = Math.round(1 - normalizedMagenta) * maxRgb * 255;
+    const blue: number = Math.round(1 - normalizedYellow) * maxRgb * 255;
+
+    return { red, green, blue };
+  }
+
+  /**
+   * Converts a hexadecimal color value to the corresponding color name.
+   * @param {string} color - The hexadecimal color value.
+   * @returns {string | null} The corresponding color name, or null if not found.
+   */
+  fromHexToName(color: string): string | null {
+    const argumentIsInvalid: boolean =
+      typeof color !== "string" || color.length < 6 || color.length > 7;
+    if (argumentIsInvalid) {
+      throw new Error(
+        `Argument passed is invalid: ${
+          typeof color !== "string" ? "not a string" : "has wrong hex length"
+        }`
+      );
+    }
+
+    color = color.includes("#") ? color.slice(1) : color;
+
+    const nameColorObject: NameColor | null =
+      colorArray.find((currentNameColorObject) => {
+        const { hexValue } = currentNameColorObject;
+        return color === hexValue;
+      }) || null;
+
+    return nameColorObject?.name;
+  }
+
+  /**
+   * Converts a color name to the corresponding hexadecimal color value.
+   * @param {string} color - The color name.
+   * @returns {string | null} The corresponding hexadecimal color value, or null if not found.
+   */
+  fromNameToHex(color: string): string | null {
+    const argumentIsInvalid: boolean = typeof color !== "string";
+    if (argumentIsInvalid) {
+      throw new Error(`Argument passed is invalid: not a color name string`);
+    }
+
+    const nameColorObject: NameColor | null =
+      colorArray.find((currentNameColorObject) => {
+        const { name } = currentNameColorObject;
+        return color === name;
+      }) || null;
+
+    return nameColorObject?.hexValue;
+  }
 }
 
 /**
  * ColorConverter class that extends AbstractConversionMethods.
  */
 export class ColorConverter extends AbstractConversionMethods {
-  color:
-    | string
-    | RedGreenBlue
-    | HueSaturationLightness
-    | HueWhitenessBlackness
-    | HueSaturationValue;
-  currentModel: string;
+  color: ColorRepresentation;
 
   private normalizedColor: RedGreenBlue;
+
+  currentModel: string;
 
   /**
    * Constructs a ColorConverter object.
    * @param {string} currentModel - The current color model.
    * @param {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} color - The color value.
    */
-  constructor(
-    currentModel: string,
-    color:
-      | string
-      | RedGreenBlue
-      | HueSaturationLightness
-      | HueWhitenessBlackness
-      | HueSaturationValue
-  ) {
+  constructor(currentModel: string, color: ColorRepresentation) {
     super();
-    this.color = color;
+    this.color = color as any;
 
     this.normalizedColor;
 
@@ -422,6 +508,19 @@ export class ColorConverter extends AbstractConversionMethods {
         break;
       }
 
+      case "cmyk": {
+        this.normalizedColor = this.fromCymkToRgb(
+          this.color as CyanMagentaYellowKey
+        );
+        break;
+      }
+
+      case "name": {
+        const hexColor: string = this.fromNameToHex(this.color as string);
+        this.normalizedColor = this.fromHexToRgb(hexColor);
+        break;
+      }
+
       default: {
         throw new Error("Invalid color model.");
       }
@@ -433,14 +532,9 @@ export class ColorConverter extends AbstractConversionMethods {
    * @param {string} targetModel - The target color model.
    * @returns {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} The converted color value.
    */
-  convertTo(
-    targetModel: string
-  ):
-    | string
-    | RedGreenBlue
-    | HueSaturationLightness
-    | HueWhitenessBlackness
-    | HueSaturationValue {
+  convertTo(targetModel: string): ColorRepresentation {
+    targetModel = targetModel.toLowerCase();
+
     switch (targetModel) {
       case "hex": {
         return this.fromRgbToHex(this.normalizedColor);
@@ -458,6 +552,14 @@ export class ColorConverter extends AbstractConversionMethods {
         return this.fromRgbToHsv(this.normalizedColor);
       }
       case "cmyk": {
+        return this.fromRgbToCmyk(this.normalizedColor);
+      }
+      case "name": {
+        const hexColor: string = this.fromRgbToHex(
+          this.normalizedColor as RedGreenBlue
+        );
+
+        return this.fromHexToName(hexColor);
       }
 
       default: {
@@ -470,19 +572,39 @@ export class ColorConverter extends AbstractConversionMethods {
    * Retrieves all color models for the current color.
    * @returns {Array} An array containing the color values in different color models.
    */
-  getAllColorModels(): (
-    | string
-    | RedGreenBlue
-    | HueSaturationLightness
-    | HueWhitenessBlackness
-    | HueSaturationValue
-  )[] {
+  getAllColorModels(): ColorRepresentation[] {
+    const hexColor: string = this.fromRgbToHex(
+      this.normalizedColor as RedGreenBlue
+    );
+
+    const rgbColor: RedGreenBlue = this.normalizedColor;
+
+    const hslColor: HueSaturationLightness = this.fromRgbToHsl(
+      this.normalizedColor
+    );
+
+    const hwbColor: HueWhitenessBlackness = this.fromRgbToHwb(
+      this.normalizedColor
+    );
+
+    const hsvColor: HueSaturationValue = this.fromRgbToHsv(
+      this.normalizedColor
+    );
+
+    const cmykColor: CyanMagentaYellowKey = this.fromRgbToCmyk(
+      this.normalizedColor
+    );
+
+    const nameColor: string | null = this.fromHexToName(hexColor);
+
     return [
-      this.fromRgbToHex(this.normalizedColor),
-      this.normalizedColor,
-      this.fromRgbToHsl(this.normalizedColor),
-      this.fromRgbToHwb(this.normalizedColor),
-      this.fromRgbToHsv(this.normalizedColor),
+      nameColor,
+      hexColor,
+      rgbColor,
+      hslColor,
+      hwbColor,
+      hsvColor,
+      cmykColor,
     ];
   }
 }

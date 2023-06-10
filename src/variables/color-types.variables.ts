@@ -49,7 +49,7 @@ export type CyanMagentaYellowKey = {
  */
 export type NameColor = {
   name: string | null;
-  value: string | null;
+  hexValue: string | null;
 };
 
 export type ColorRepresentation =
@@ -58,4 +58,5 @@ export type ColorRepresentation =
   | HueSaturationLightness
   | HueWhitenessBlackness
   | HueSaturationValue
-  | CyanMagentaYellowKey;
+  | CyanMagentaYellowKey
+  | NameColor;

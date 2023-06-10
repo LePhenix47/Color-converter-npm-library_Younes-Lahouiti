@@ -1,4 +1,4 @@
-import { RedGreenBlue, HueSaturationLightness, HueWhitenessBlackness, HueSaturationValue } from "../variables/color-types.variables";
+import { RedGreenBlue, HueSaturationLightness, HueWhitenessBlackness, HueSaturationValue, CyanMagentaYellowKey, ColorRepresentation } from "../variables/color-types.variables";
 /**
  * Abstract class containing conversion methods for various color models.
  */
@@ -51,20 +51,22 @@ export declare class AbstractConversionMethods {
      * @returns {RedGreenBlue} The RGB color object.
      */
     fromHsvToRgb(color: HueSaturationValue): RedGreenBlue;
+    fromRgbToCmyk(color: RedGreenBlue): CyanMagentaYellowKey;
+    fromCymkToRgb(color: CyanMagentaYellowKey): RedGreenBlue;
 }
 /**
  * ColorConverter class that extends AbstractConversionMethods.
  */
 export declare class ColorConverter extends AbstractConversionMethods {
-    color: string | RedGreenBlue | HueSaturationLightness | HueWhitenessBlackness | HueSaturationValue;
-    currentModel: string;
+    color: ColorRepresentation;
     private normalizedColor;
+    currentModel: string;
     /**
      * Constructs a ColorConverter object.
      * @param {string} currentModel - The current color model.
      * @param {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} color - The color value.
      */
-    constructor(currentModel: string, color: string | RedGreenBlue | HueSaturationLightness | HueWhitenessBlackness | HueSaturationValue);
+    constructor(currentModel: string, color: ColorRepresentation);
     /**
      * Normalizes the color to RGB format to be later convert back into another one
      * @returns {RedGreenBlue} The normalized RGB color value.
@@ -75,10 +77,10 @@ export declare class ColorConverter extends AbstractConversionMethods {
      * @param {string} targetModel - The target color model.
      * @returns {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} The converted color value.
      */
-    convertTo(targetModel: string): string | RedGreenBlue | HueSaturationLightness | HueWhitenessBlackness | HueSaturationValue;
+    convertTo(targetModel: string): ColorRepresentation;
     /**
      * Retrieves all color models for the current color.
      * @returns {Array} An array containing the color values in different color models.
      */
-    getAllColorModels(): (string | RedGreenBlue | HueSaturationLightness | HueWhitenessBlackness | HueSaturationValue)[];
+    getAllColorModels(): ColorRepresentation[];
 }

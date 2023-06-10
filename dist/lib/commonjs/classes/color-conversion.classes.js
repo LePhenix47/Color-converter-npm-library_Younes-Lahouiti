@@ -291,6 +291,30 @@ var AbstractConversionMethods = /** @class */ (function () {
             blue: Math.round(normalizedBlue * 255),
         };
     };
+    AbstractConversionMethods.prototype.fromRgbToCmyk = function (color) {
+        var red = color.red, green = color.green, blue = color.blue;
+        var normalizedRed = red / 255;
+        var normalizedGreen = green / 255;
+        var normalizedBlue = blue / 255;
+        var maxValue = Math.max(normalizedRed, normalizedGreen, normalizedBlue);
+        var cyan = Math.round(1 - normalizedRed / maxValue) * 100;
+        var magenta = Math.round(1 - normalizedGreen / maxValue) * 100;
+        var yellow = Math.round(1 - normalizedBlue / maxValue) * 100;
+        var key = Math.round(1 - maxValue);
+        return { cyan: cyan, magenta: magenta, yellow: yellow, key: key };
+    };
+    AbstractConversionMethods.prototype.fromCymkToRgb = function (color) {
+        var cyan = color.cyan, magenta = color.magenta, yellow = color.yellow, key = color.key;
+        var normalizedCyan = cyan / 100;
+        var normalizedMagenta = magenta / 100;
+        var normalizedYellow = yellow / 100;
+        var normalizedKey = key / 100;
+        var maxRgb = 1 - normalizedKey;
+        var red = Math.round(1 - normalizedCyan) * maxRgb * 255;
+        var green = Math.round(1 - normalizedMagenta) * maxRgb * 255;
+        var blue = Math.round(1 - normalizedYellow) * maxRgb * 255;
+        return { red: red, green: green, blue: blue };
+    };
     return AbstractConversionMethods;
 }());
 exports.AbstractConversionMethods = AbstractConversionMethods;
@@ -338,6 +362,13 @@ var ColorConverter = /** @class */ (function (_super) {
                 this.normalizedColor = this.fromHsvToRgb(this.color);
                 break;
             }
+            case "cmyk": {
+                this.normalizedColor = this.fromCymkToRgb(this.color);
+                break;
+            }
+            case "name": {
+                break;
+            }
             default: {
                 throw new Error("Invalid color model.");
             }
@@ -364,6 +395,11 @@ var ColorConverter = /** @class */ (function (_super) {
             }
             case "hsv": {
                 return this.fromRgbToHsv(this.normalizedColor);
+            }
+            case "cmyk": {
+            }
+            case "name": {
+                break;
             }
             default: {
                 throw new Error("Invalid color model.");
