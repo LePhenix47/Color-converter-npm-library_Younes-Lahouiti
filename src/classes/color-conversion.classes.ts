@@ -457,6 +457,8 @@ export class ColorConverter extends AbstractConversionMethods {
       case "hsv": {
         return this.fromRgbToHsv(this.normalizedColor);
       }
+      case "cmyk": {
+      }
 
       default: {
         throw new Error("Invalid color model.");

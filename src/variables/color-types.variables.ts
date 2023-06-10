@@ -33,3 +33,29 @@ export type HueWhitenessBlackness = {
   whiteness: number;
   blackness: number;
 };
+
+/**
+ * Represents a color in the Cyan-Magenta-Yellow-Key (CMYK) color model with value in %
+ */
+export type CyanMagentaYellowKey = {
+  cyan: number;
+  magenta: number;
+  yellow: number;
+  key: number;
+};
+
+/**
+ * Represents a color with a name of the color
+ */
+export type NameColor = {
+  name: string | null;
+  value: string | null;
+};
+
+export type ColorRepresentation =
+  | string
+  | RedGreenBlue
+  | HueSaturationLightness
+  | HueWhitenessBlackness
+  | HueSaturationValue
+  | CyanMagentaYellowKey;
