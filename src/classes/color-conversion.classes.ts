@@ -21,9 +21,16 @@ export class AbstractConversionMethods {
   fromRgbToHex(color: RedGreenBlue): string {
     const { red, green, blue } = color;
 
-    const hexadecimalRed: string = red.toString(16);
-    const hexadecimalGreen: string = green.toString(16);
-    const hexadecimalBlue: string = blue.toString(16);
+    const hexadecimalRed: string =
+      red.toString(16).length < 2 ? `0${red.toString(16)}` : red.toString(16);
+    const hexadecimalGreen: string =
+      green.toString(16).length < 2
+        ? `0${green.toString(16)}`
+        : green.toString(16);
+    const hexadecimalBlue: string =
+      blue.toString(16).length < 2
+        ? `0${blue.toString(16)}`
+        : blue.toString(16);
 
     return `#${hexadecimalRed}${hexadecimalGreen}${hexadecimalBlue}`;
   }
@@ -392,9 +399,9 @@ export class AbstractConversionMethods {
 
     const maxRgb: number = 1 - normalizedKey;
 
-    const red: number = Math.round(1 - normalizedCyan) * maxRgb * 255;
-    const green: number = Math.round(1 - normalizedMagenta) * maxRgb * 255;
-    const blue: number = Math.round(1 - normalizedYellow) * maxRgb * 255;
+    let red: number = Math.round((1 - normalizedCyan) * maxRgb) * 255;
+    let green: number = Math.round((1 - normalizedMagenta) * maxRgb) * 255;
+    let blue: number = Math.round((1 - normalizedYellow) * maxRgb) * 255;
 
     return { red, green, blue };
   }
@@ -538,8 +545,9 @@ export class ColorConverter extends AbstractConversionMethods {
 
   /**
    * Sets a new color + target model to the instance class
+   * @returns {void}
    */
-  setNewColor(newColor: ColorRepresentation, newTargetModel: string) {
+  setNewColor(newColor: ColorRepresentation, newTargetModel: string): void {
     this.color = newColor;
 
     this.currentModel = newTargetModel;

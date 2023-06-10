@@ -30,7 +30,7 @@ var AbstractConversionMethods = /** @class */ (function () {
         var hexadecimalRed = red.toString(16);
         var hexadecimalGreen = green.toString(16);
         var hexadecimalBlue = blue.toString(16);
-        return "#".concat(hexadecimalRed).concat(hexadecimalGreen).concat(hexadecimalBlue, ";");
+        return "#".concat(hexadecimalRed).concat(hexadecimalGreen).concat(hexadecimalBlue);
     };
     /**
      * Converts a color in hexadecimal format to RGB.
