@@ -415,12 +415,17 @@ export class AbstractConversionMethods {
       );
     }
 
-    color = color.includes("#") ? color.slice(1) : color;
+    let normalizedColor: string = color.toLowerCase();
+    normalizedColor = normalizedColor.includes("#")
+      ? normalizedColor.slice(1)
+      : normalizedColor;
 
     const nameColorObject: NameColor | null =
       colorArray.find((currentNameColorObject) => {
         const { hexValue } = currentNameColorObject;
-        return color === hexValue;
+
+        const normalizedHexValue: string = hexValue.toLowerCase();
+        return normalizedColor === normalizedHexValue;
       }) || null;
 
     return nameColorObject?.name;
@@ -437,10 +442,13 @@ export class AbstractConversionMethods {
       throw new Error(`Argument passed is invalid: not a color name string`);
     }
 
+    let normalizedColor: string = color.toLowerCase();
+
     const nameColorObject: NameColor | null =
       colorArray.find((currentNameColorObject) => {
         const { name } = currentNameColorObject;
-        return color === name;
+        const normalizedName: string = name.toLowerCase();
+        return normalizedColor === normalizedName;
       }) || null;
 
     return nameColorObject?.hexValue;
