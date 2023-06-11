@@ -26,7 +26,7 @@ export class AbstractConversionMethods {
     // Verify color object properties
     if (hasNotNecessaryProperties) {
       throw new Error(
-        "Invalid color object. Missing required properties: red, green, blue"
+        "Invalid color object. Missing required properties: red, green or blue"
       );
     }
 
@@ -114,7 +114,7 @@ export class AbstractConversionMethods {
     // Verify color object properties
     if (hasNotNecessaryProperties) {
       throw new Error(
-        "Invalid color object. Missing required properties: red, green, blue"
+        "Invalid color object. Missing required properties: red, green or blue"
       );
     }
 
@@ -190,8 +190,6 @@ export class AbstractConversionMethods {
       }
     }
 
-    console.log(hue);
-
     // Round the values and multiply saturation and lightness by 100
     const roundedHue: number = Math.round(hue * 360) % 360;
     const roundedSaturation: number = Math.round(saturation * 100);
@@ -211,11 +209,32 @@ export class AbstractConversionMethods {
    * @returns {RedGreenBlue} The RGB color object.
    */
   fromHslToRgb(color: HueSaturationLightness): RedGreenBlue {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("hue") ||
+      !color.hasOwnProperty("saturation") ||
+      !color.hasOwnProperty("lightness");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: hue, saturation or lightness"
+      );
+    }
+
     const { hue, saturation, lightness } = color;
 
     const normalizedSaturation: number = saturation / 100;
     const normalizedLightness: number = lightness / 100;
 
+    /**
+     * Calculates the color component based on the given color value.
+     * The color component represents the intensity of a specific color (red, green, or blue)
+     * in the RGB color model.
+     *
+     * @link https://en.wikipedia.org/wiki/Color_space
+     *
+     * @param {number} colorValue - The color value to calculate the component for.
+     * @returns {number} - The calculated color component.
+     */
     function calculateComponent(colorValue: number): number {
       const colorComponent: number = (colorValue + hue / 30) % 12;
       const chroma: number =
@@ -248,7 +267,7 @@ export class AbstractConversionMethods {
     // Verify color object properties
     if (hasNotNecessaryProperties) {
       throw new Error(
-        "Invalid color object. Missing required properties: red, green, blue"
+        "Invalid color object. Missing required properties: red, green or blue"
       );
     }
 
@@ -297,6 +316,17 @@ export class AbstractConversionMethods {
    * @returns {RedGreenBlue} The RGB color object.
    */
   fromHwbToRgb(color: HueWhitenessBlackness): RedGreenBlue {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("hue") ||
+      !color.hasOwnProperty("whiteness") ||
+      !color.hasOwnProperty("blackness");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: hue, whiteness or blackness"
+      );
+    }
+
     const { hue, whiteness, blackness } = color;
 
     const normalizedWhiteness: number = whiteness / 100;
@@ -353,7 +383,7 @@ export class AbstractConversionMethods {
     // Verify color object properties
     if (hasNotNecessaryProperties) {
       throw new Error(
-        "Invalid color object. Missing required properties: red, green, blue"
+        "Invalid color object. Missing required properties: red, green or blue"
       );
     }
 
@@ -396,6 +426,17 @@ export class AbstractConversionMethods {
    * @returns {RedGreenBlue} The RGB color object.
    */
   fromHsvToRgb(color: HueSaturationValue): RedGreenBlue {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("hue") ||
+      !color.hasOwnProperty("saturation") ||
+      !color.hasOwnProperty("value");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: hue, saturation or value"
+      );
+    }
+
     const { hue, saturation, value } = color;
 
     // Normalize saturation and value to the range of 0-1
@@ -465,7 +506,7 @@ export class AbstractConversionMethods {
     // Verify color object properties
     if (hasNotNecessaryProperties) {
       throw new Error(
-        "Invalid color object. Missing required properties: red, green, blue"
+        "Invalid color object. Missing required properties: red, green or blue"
       );
     }
 
@@ -513,6 +554,18 @@ export class AbstractConversionMethods {
    * @returns {RedGreenBlue} The RGB color object.
    */
   fromCmykToRgb(color: CyanMagentaYellowKey): RedGreenBlue {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("cyan") ||
+      !color.hasOwnProperty("magenta") ||
+      !color.hasOwnProperty("yellow") ||
+      !color.hasOwnProperty("key");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: cyan, magenta, yellow or key "
+      );
+    }
+
     const { cyan, magenta, yellow, key } = color;
 
     const normalizedCyan: number = cyan / 100;
