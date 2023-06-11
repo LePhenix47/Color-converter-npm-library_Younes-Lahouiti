@@ -77,7 +77,7 @@ const colorName2 = "DarkBlue" //In titlecase
 
 There are currently 2 main methods:
 
-- `convertTo(targetModel)`: Methods that converts a color into another model, the target model must be valid
+- `convertTo(targetModel)`: Method that converts a color into another model, the target model must be either one of the supported 7 color models
 
 - `getAllModels()`: Method that returns an array containing all the color models
 
