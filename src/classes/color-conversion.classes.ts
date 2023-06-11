@@ -71,34 +71,32 @@ export class AbstractConversionMethods {
    */
   fromHexToRgb(color: string): RedGreenBlue {
     const colorArgumentIsInvalid: boolean =
-      color?.length < 6 || color?.length > 7;
+      typeof color !== "string" || color?.length < 6 || color?.length > 7;
     if (colorArgumentIsInvalid) {
       throw new Error(
         `Error: Unexpected color argument length passed, was expecting a 6 or 7 characters long string but instead got ${color.length}`
       );
     }
 
-    let hexColor: string = color;
-
-    const hasHashTag: boolean = color.charAt(0) === "#";
-    if (hasHashTag) {
-      hexColor = color.slice(1);
-    }
+    let hexColor: string = color.charAt(0) === "#" ? color.slice(1) : color;
 
     let redBase16: string = hexColor.substring(0, 2);
     let greeBase16: string = hexColor.substring(2, 4);
     let blueBase16: string = hexColor.substring(4, 6);
 
-    let base16NumbersArray: any[] = [redBase16, greeBase16, blueBase16];
+    let base16NumbersArray: string[] = [redBase16, greeBase16, blueBase16];
+
+    let base10NumbersArrays: number[] = [];
 
     for (let i = 0; i < base16NumbersArray.length; i++) {
-      let colorBase16: string = base16NumbersArray[i];
-      base16NumbersArray[i] = Number(`0x${colorBase16}`);
+      const colorBase16: string = base16NumbersArray[i];
+
+      const colorBase10: number = Number(`0x${colorBase16}`);
+
+      base10NumbersArrays.push(colorBase10);
     }
 
-    const redBase10: number = Number(base16NumbersArray[0]);
-    const greenBase10: number = Number(base16NumbersArray[1]);
-    const blueBase10: number = Number(base16NumbersArray[2]);
+    const [redBase10, greenBase10, blueBase10]: number[] = base10NumbersArrays;
 
     return { red: redBase10, green: greenBase10, blue: blueBase10 };
   }
@@ -553,13 +551,13 @@ export class AbstractConversionMethods {
       );
     }
 
-    let normalizedColor: string = color.toLowerCase();
-    normalizedColor = normalizedColor.includes("#")
-      ? normalizedColor.slice(1)
-      : normalizedColor;
+    let normalizedColor: string =
+      color.charAt(0) === "#" ? color.slice(1) : color;
 
-    const nameColorObject: NameColor | null = colorArray.find(
-      (currentNameColorObject) => {
+    normalizedColor = normalizedColor.toLowerCase();
+
+    const nameColorObject: NameColor = colorArray.find(
+      (currentNameColorObject: NameColor) => {
         const { hexValue } = currentNameColorObject;
 
         const normalizedHexValue: string = hexValue.toLowerCase();
@@ -583,8 +581,8 @@ export class AbstractConversionMethods {
 
     let normalizedColor: string = color.toLowerCase();
 
-    const nameColorObject: NameColor | null = colorArray.find(
-      (currentNameColorObject) => {
+    const nameColorObject: NameColor = colorArray.find(
+      (currentNameColorObject: NameColor) => {
         const { name } = currentNameColorObject;
         const normalizedName: string = name.toLowerCase();
         return normalizedColor === normalizedName;
