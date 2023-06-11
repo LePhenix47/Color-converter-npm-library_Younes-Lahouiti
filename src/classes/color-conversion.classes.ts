@@ -370,16 +370,18 @@ export class AbstractConversionMethods {
     const normalizedGreen: number = green / 255;
     const normalizedBlue: number = blue / 255;
 
-    const maxValue: number = Math.max(
+    const maxRgbValue: number = Math.max(
       normalizedRed,
       normalizedGreen,
       normalizedBlue
     );
 
-    const cyan: number = Math.round(1 - normalizedRed / maxValue) * 100;
-    const magenta: number = Math.round(1 - normalizedGreen / maxValue) * 100;
-    const yellow: number = Math.round(1 - normalizedBlue / maxValue) * 100;
-    const key: number = Math.round(1 - maxValue);
+    const cyan: number = Math.round((1 - normalizedRed / maxRgbValue) * 100);
+    const magenta: number = Math.round(
+      (1 - normalizedGreen / maxRgbValue) * 100
+    );
+    const yellow: number = Math.round((1 - normalizedBlue / maxRgbValue) * 100);
+    const key: number = Math.round((1 - maxRgbValue) * 100);
 
     return { cyan, magenta, yellow, key };
   }
@@ -389,7 +391,7 @@ export class AbstractConversionMethods {
    * @param {CyanMagentaYellowKey} color - The CMYK color object.
    * @returns {RedGreenBlue} The RGB color object.
    */
-  fromCymkToRgb(color: CyanMagentaYellowKey): RedGreenBlue {
+  fromCmykToRgb(color: CyanMagentaYellowKey): RedGreenBlue {
     const { cyan, magenta, yellow, key } = color;
 
     const normalizedCyan: number = cyan / 100;
@@ -397,11 +399,15 @@ export class AbstractConversionMethods {
     const normalizedYellow: number = yellow / 100;
     const normalizedKey: number = key / 100;
 
-    const maxRgb: number = 1 - normalizedKey;
+    const maxCmykValue: number = 1 - normalizedKey;
 
-    let red: number = Math.round((1 - normalizedCyan) * maxRgb) * 255;
-    let green: number = Math.round((1 - normalizedMagenta) * maxRgb) * 255;
-    let blue: number = Math.round((1 - normalizedYellow) * maxRgb) * 255;
+    const red: number = Math.round((1 - normalizedCyan) * maxCmykValue * 255);
+    const green: number = Math.round(
+      (1 - normalizedMagenta) * maxCmykValue * 255
+    );
+    const blue: number = Math.round(
+      (1 - normalizedYellow) * maxCmykValue * 255
+    );
 
     return { red, green, blue };
   }
@@ -429,15 +435,16 @@ export class AbstractConversionMethods {
       ? normalizedColor.slice(1)
       : normalizedColor;
 
-    const nameColorObject: NameColor | null =
-      colorArray.find((currentNameColorObject) => {
+    const nameColorObject: NameColor | null = colorArray.find(
+      (currentNameColorObject) => {
         const { hexValue } = currentNameColorObject;
 
         const normalizedHexValue: string = hexValue.toLowerCase();
         return normalizedColor === normalizedHexValue;
-      }) || null;
+      }
+    );
 
-    return nameColorObject?.name;
+    return nameColorObject?.name || null;
   }
 
   /**
@@ -453,14 +460,15 @@ export class AbstractConversionMethods {
 
     let normalizedColor: string = color.toLowerCase();
 
-    const nameColorObject: NameColor | null =
-      colorArray.find((currentNameColorObject) => {
+    const nameColorObject: NameColor | null = colorArray.find(
+      (currentNameColorObject) => {
         const { name } = currentNameColorObject;
         const normalizedName: string = name.toLowerCase();
         return normalizedColor === normalizedName;
-      }) || null;
+      }
+    );
 
-    return nameColorObject?.hexValue;
+    return nameColorObject?.hexValue || null;
   }
 }
 
@@ -525,7 +533,7 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       case "cmyk": {
-        this.normalizedColor = this.fromCymkToRgb(
+        this.normalizedColor = this.fromCmykToRgb(
           this.color as CyanMagentaYellowKey
         );
         break;

@@ -62,7 +62,7 @@ export declare class AbstractConversionMethods {
      * @param {CyanMagentaYellowKey} color - The CMYK color object.
      * @returns {RedGreenBlue} The RGB color object.
      */
-    fromCymkToRgb(color: CyanMagentaYellowKey): RedGreenBlue;
+    fromCmykToRgb(color: CyanMagentaYellowKey): RedGreenBlue;
     /**
      * Converts a hexadecimal color value to the corresponding color name.
      * @param {string} color - The hexadecimal color value.
@@ -96,6 +96,7 @@ export declare class ColorConverter extends AbstractConversionMethods {
     private normalizeToRgb;
     /**
      * Sets a new color + target model to the instance class
+     * @returns {void}
      */
     setNewColor(newColor: ColorRepresentation, newTargetModel: string): void;
     /**

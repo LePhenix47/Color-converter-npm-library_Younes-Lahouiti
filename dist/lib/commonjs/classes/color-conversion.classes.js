@@ -30,9 +30,13 @@ var AbstractConversionMethods = /** @class */ (function () {
      */
     AbstractConversionMethods.prototype.fromRgbToHex = function (color) {
         var red = color.red, green = color.green, blue = color.blue;
-        var hexadecimalRed = red.toString(16);
-        var hexadecimalGreen = green.toString(16);
-        var hexadecimalBlue = blue.toString(16);
+        var hexadecimalRed = red.toString(16).length < 2 ? "0".concat(red.toString(16)) : red.toString(16);
+        var hexadecimalGreen = green.toString(16).length < 2
+            ? "0".concat(green.toString(16))
+            : green.toString(16);
+        var hexadecimalBlue = blue.toString(16).length < 2
+            ? "0".concat(blue.toString(16))
+            : blue.toString(16);
         return "#".concat(hexadecimalRed).concat(hexadecimalGreen).concat(hexadecimalBlue);
     };
     /**
@@ -301,11 +305,11 @@ var AbstractConversionMethods = /** @class */ (function () {
         var normalizedRed = red / 255;
         var normalizedGreen = green / 255;
         var normalizedBlue = blue / 255;
-        var maxValue = Math.max(normalizedRed, normalizedGreen, normalizedBlue);
-        var cyan = Math.round(1 - normalizedRed / maxValue) * 100;
-        var magenta = Math.round(1 - normalizedGreen / maxValue) * 100;
-        var yellow = Math.round(1 - normalizedBlue / maxValue) * 100;
-        var key = Math.round(1 - maxValue);
+        var maxRgbValue = Math.max(normalizedRed, normalizedGreen, normalizedBlue);
+        var cyan = Math.round((1 - normalizedRed / maxRgbValue) * 100);
+        var magenta = Math.round((1 - normalizedGreen / maxRgbValue) * 100);
+        var yellow = Math.round((1 - normalizedBlue / maxRgbValue) * 100);
+        var key = Math.round((1 - maxRgbValue) * 100);
         return { cyan: cyan, magenta: magenta, yellow: yellow, key: key };
     };
     /**
@@ -313,16 +317,16 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @param {CyanMagentaYellowKey} color - The CMYK color object.
      * @returns {RedGreenBlue} The RGB color object.
      */
-    AbstractConversionMethods.prototype.fromCymkToRgb = function (color) {
+    AbstractConversionMethods.prototype.fromCmykToRgb = function (color) {
         var cyan = color.cyan, magenta = color.magenta, yellow = color.yellow, key = color.key;
         var normalizedCyan = cyan / 100;
         var normalizedMagenta = magenta / 100;
         var normalizedYellow = yellow / 100;
         var normalizedKey = key / 100;
-        var maxRgb = 1 - normalizedKey;
-        var red = Math.round(1 - normalizedCyan) * maxRgb * 255;
-        var green = Math.round(1 - normalizedMagenta) * maxRgb * 255;
-        var blue = Math.round(1 - normalizedYellow) * maxRgb * 255;
+        var maxCmykValue = 1 - normalizedKey;
+        var red = Math.round((1 - normalizedCyan) * maxCmykValue * 255);
+        var green = Math.round((1 - normalizedMagenta) * maxCmykValue * 255);
+        var blue = Math.round((1 - normalizedYellow) * maxCmykValue * 255);
         return { red: red, green: green, blue: blue };
     };
     /**
@@ -345,8 +349,8 @@ var AbstractConversionMethods = /** @class */ (function () {
             var hexValue = currentNameColorObject.hexValue;
             var normalizedHexValue = hexValue.toLowerCase();
             return normalizedColor === normalizedHexValue;
-        }) || null;
-        return nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.name;
+        });
+        return (nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.name) || null;
     };
     /**
      * Converts a color name to the corresponding hexadecimal color value.
@@ -363,8 +367,8 @@ var AbstractConversionMethods = /** @class */ (function () {
             var name = currentNameColorObject.name;
             var normalizedName = name.toLowerCase();
             return normalizedColor === normalizedName;
-        }) || null;
-        return nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.hexValue;
+        });
+        return (nameColorObject === null || nameColorObject === void 0 ? void 0 : nameColorObject.hexValue) || null;
     };
     return AbstractConversionMethods;
 }());
@@ -413,7 +417,7 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "cmyk": {
-                this.normalizedColor = this.fromCymkToRgb(this.color);
+                this.normalizedColor = this.fromCmykToRgb(this.color);
                 break;
             }
             case "name": {
@@ -428,6 +432,7 @@ var ColorConverter = /** @class */ (function (_super) {
     };
     /**
      * Sets a new color + target model to the instance class
+     * @returns {void}
      */
     ColorConverter.prototype.setNewColor = function (newColor, newTargetModel) {
         this.color = newColor;
