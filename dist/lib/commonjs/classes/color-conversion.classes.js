@@ -415,9 +415,15 @@ var AbstractConversionMethods = /** @class */ (function () {
         var normalizedGreen = green / 255;
         var normalizedBlue = blue / 255;
         var maxRgbValue = Math.max(normalizedRed, normalizedGreen, normalizedBlue);
-        var cyan = Math.round((1 - normalizedRed / maxRgbValue) * 100);
-        var magenta = Math.round((1 - normalizedGreen / maxRgbValue) * 100);
-        var yellow = Math.round((1 - normalizedBlue / maxRgbValue) * 100);
+        var cyan = maxRgbValue !== 0
+            ? Math.round((1 - normalizedRed / maxRgbValue) * 100)
+            : 0;
+        var magenta = maxRgbValue !== 0
+            ? Math.round((1 - normalizedGreen / maxRgbValue) * 100)
+            : 0;
+        var yellow = maxRgbValue !== 0
+            ? Math.round((1 - normalizedBlue / maxRgbValue) * 100)
+            : 0;
         var key = Math.round((1 - maxRgbValue) * 100);
         return { cyan: cyan, magenta: magenta, yellow: yellow, key: key };
     };

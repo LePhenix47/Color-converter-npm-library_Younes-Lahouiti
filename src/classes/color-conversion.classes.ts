@@ -538,11 +538,19 @@ export class AbstractConversionMethods {
       normalizedBlue
     );
 
-    const cyan: number = Math.round((1 - normalizedRed / maxRgbValue) * 100);
-    const magenta: number = Math.round(
-      (1 - normalizedGreen / maxRgbValue) * 100
-    );
-    const yellow: number = Math.round((1 - normalizedBlue / maxRgbValue) * 100);
+    const cyan: number =
+      maxRgbValue !== 0
+        ? Math.round((1 - normalizedRed / maxRgbValue) * 100)
+        : 0;
+    const magenta: number =
+      maxRgbValue !== 0
+        ? Math.round((1 - normalizedGreen / maxRgbValue) * 100)
+        : 0;
+    const yellow: number =
+      maxRgbValue !== 0
+        ? Math.round((1 - normalizedBlue / maxRgbValue) * 100)
+        : 0;
+
     const key: number = Math.round((1 - maxRgbValue) * 100);
 
     return { cyan, magenta, yellow, key };
