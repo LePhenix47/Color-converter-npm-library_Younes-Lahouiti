@@ -10,7 +10,7 @@
     - [Importing the Library](#importing-the-library)
     - [Supported color models](#supported-color-models)
     - [Creating Color Objects](#creating-color-objects)
-    - [Methods available](#methods-available)
+    - [Main methods available](#main-methods-available)
     - [Converting Color Models](#converting-color-models)
   - [Available Conversion Methods](#available-conversion-methods)
   - [Miscellaneous](#miscellaneous)
@@ -73,7 +73,7 @@ const colorName1 = "rebeccapurple" //All lowercase
 const colorName2 = "DarkBlue" //In titlecase
 ```
 
-### Methods available
+### Main methods available
 
 There are currently 2 main methods:
 
