@@ -19,18 +19,47 @@ export class AbstractConversionMethods {
    * @returns {string} The color in hexadecimal format.
    */
   fromRgbToHex(color: RedGreenBlue): string {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("red") ||
+      !color.hasOwnProperty("green") ||
+      !color.hasOwnProperty("blue");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: red, green, blue"
+      );
+    }
+
     const { red, green, blue } = color;
 
+    const argumentsAreInvalid: boolean =
+      !Number.isInteger(red) ||
+      !Number.isInteger(green) ||
+      !Number.isInteger(blue) ||
+      red < 0 ||
+      red > 255 ||
+      green < 0 ||
+      green > 255 ||
+      blue < 0 ||
+      blue > 255;
+    if (argumentsAreInvalid) {
+      throw new Error(
+        `Invalid RGB color values. Expected integers between 0 and 255, but received: red=${red}, green=${green}, blue=${blue}`
+      );
+    }
+
     const hexadecimalRed: string =
-      red.toString(16).length < 2 ? `0${red.toString(16)}` : red.toString(16);
+      toBase16(red).length < 2 ? `0${toBase16(red)}` : toBase16(red);
+
     const hexadecimalGreen: string =
-      green.toString(16).length < 2
-        ? `0${green.toString(16)}`
-        : green.toString(16);
+      toBase16(green).length < 2 ? `0${toBase16(green)}` : toBase16(green);
+
     const hexadecimalBlue: string =
-      blue.toString(16).length < 2
-        ? `0${blue.toString(16)}`
-        : blue.toString(16);
+      toBase16(blue).length < 2 ? `0${toBase16(blue)}` : toBase16(blue);
+
+    function toBase16(number: number) {
+      return number.toString(16);
+    }
 
     return `#${hexadecimalRed}${hexadecimalGreen}${hexadecimalBlue}`;
   }
@@ -80,6 +109,17 @@ export class AbstractConversionMethods {
    * @returns {HueSaturationLightness} The HSL color object.
    */
   fromRgbToHsl(color: RedGreenBlue): HueSaturationLightness {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("red") ||
+      !color.hasOwnProperty("green") ||
+      !color.hasOwnProperty("blue");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: red, green, blue"
+      );
+    }
+
     const { red, green, blue } = color;
 
     const argumentsAreInvalid: boolean =
@@ -203,7 +243,34 @@ export class AbstractConversionMethods {
    * @returns {HueWhitenessBlackness} The HWB color object.
    */
   fromRgbToHwb(color: RedGreenBlue): HueWhitenessBlackness {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("red") ||
+      !color.hasOwnProperty("green") ||
+      !color.hasOwnProperty("blue");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: red, green, blue"
+      );
+    }
+
     const { red, green, blue } = color;
+
+    const argumentsAreInvalid: boolean =
+      !Number.isInteger(red) ||
+      !Number.isInteger(green) ||
+      !Number.isInteger(blue) ||
+      red < 0 ||
+      red > 255 ||
+      green < 0 ||
+      green > 255 ||
+      blue < 0 ||
+      blue > 255;
+    if (argumentsAreInvalid) {
+      throw new Error(
+        `Invalid RGB color values. Expected integers between 0 and 255, but received: red=${red}, green=${green}, blue=${blue}`
+      );
+    }
 
     const normalizedRed: number = red / 255;
     const normalizedGreen: number = green / 255;
@@ -281,7 +348,34 @@ export class AbstractConversionMethods {
    * @returns {HueSaturationValue} The HSV color object.
    */
   fromRgbToHsv(color: RedGreenBlue): HueSaturationValue {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("red") ||
+      !color.hasOwnProperty("green") ||
+      !color.hasOwnProperty("blue");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: red, green, blue"
+      );
+    }
+
     const { red, green, blue } = color;
+
+    const argumentsAreInvalid: boolean =
+      !Number.isInteger(red) ||
+      !Number.isInteger(green) ||
+      !Number.isInteger(blue) ||
+      red < 0 ||
+      red > 255 ||
+      green < 0 ||
+      green > 255 ||
+      blue < 0 ||
+      blue > 255;
+    if (argumentsAreInvalid) {
+      throw new Error(
+        `Invalid RGB color values. Expected integers between 0 and 255, but received: red=${red}, green=${green}, blue=${blue}`
+      );
+    }
 
     const min: number = Math.min(red, green, blue);
     const max: number = Math.max(red, green, blue);
@@ -366,7 +460,34 @@ export class AbstractConversionMethods {
    * @returns {CyanMagentaYellowKey} The CMYK color object.
    */
   fromRgbToCmyk(color: RedGreenBlue): CyanMagentaYellowKey {
+    const hasNotNecessaryProperties: boolean =
+      !color.hasOwnProperty("red") ||
+      !color.hasOwnProperty("green") ||
+      !color.hasOwnProperty("blue");
+    // Verify color object properties
+    if (hasNotNecessaryProperties) {
+      throw new Error(
+        "Invalid color object. Missing required properties: red, green, blue"
+      );
+    }
+
     const { red, green, blue } = color;
+
+    const argumentsAreInvalid: boolean =
+      !Number.isInteger(red) ||
+      !Number.isInteger(green) ||
+      !Number.isInteger(blue) ||
+      red < 0 ||
+      red > 255 ||
+      green < 0 ||
+      green > 255 ||
+      blue < 0 ||
+      blue > 255;
+    if (argumentsAreInvalid) {
+      throw new Error(
+        `Invalid RGB color values. Expected integers between 0 and 255, but received: red=${red}, green=${green}, blue=${blue}`
+      );
+    }
 
     const normalizedRed: number = red / 255;
     const normalizedGreen: number = green / 255;
