@@ -10,6 +10,7 @@
     - [Importing the Library](#importing-the-library)
     - [Supported color models](#supported-color-models)
     - [Creating Color Objects](#creating-color-objects)
+    - [Methods available](#methods-available)
     - [Converting Color Models](#converting-color-models)
   - [Available Conversion Methods](#available-conversion-methods)
   - [Miscellaneous](#miscellaneous)
@@ -60,7 +61,9 @@ const hsvColor = { hue: 200, saturation: 28, value: 35 };
 const cmyk = { cyan:0, magenta: 100, yellow: 100, key: 0 };
 ```
 
-On the other hand, you can specify the hexadecimal value as a string, with or without the '#' symbol. For example:
+On the other hand, you can specify the hexadecimal value as a string, with or without the '#' symbol.
+
+**For example:**
 
 ```js
 const colorHex1 = "#0000FF"; // Hexadecimal color with the '#' symbol
@@ -70,22 +73,30 @@ const colorName1 = "rebeccapurple" //All lowercase
 const colorName2 = "DarkBlue" //In titlecase
 ```
 
+### Methods available
+
+There are currently 2 main methods:
+
+- `convertTo(targetModel)`: Methods that converts a color into another model, the target model must be valid
+
+- `getAllModels()`: Method that returns an array containing all the color models
+
 ### Converting Color Models
 
 To convert colors between different color models, follow these steps:
 
 1. Create a `ColorConverter` instance by specifying the source color model and the color values.
 
-It is important that rgb, hsl, hwb and hsv values are create with an object for example:
+It is important that rgb, hsl, hwb, hsv and cmyk values are created with an object
 
-For example:
+**For example:**
 
 ```js
 const color = { hue: 200, saturation: 28, lightness: 35 };
 const converter = new ColorConverter('hsl', color);
 ```
 
-2. Use the `convertTo` method to convert the color to the desired color model. For example, to convert to the hexadecimal representation:
+1. Use the `convertTo` method to convert the color to the desired color model. For example, to convert to the hexadecimal representation:
 
 ```js
 const hexColor = converter.convertTo('hex');
@@ -93,7 +104,9 @@ const hexColor = converter.convertTo('hex');
 
 ## Available Conversion Methods
 
-To get a list of all available color models supported by `@lephenix47/color-converter`, you can use the `getAllColorModels` method. This method returns an array of strings representing the supported color models. For example:
+To get a list of all available color models supported by `@lephenix47/color-converter`, you can use the `getAllColorModels` method. This method returns an array of strings representing the supported color models.
+
+**For example:**
 
 ```js
 const allModels = converter.getAllColorModels();
