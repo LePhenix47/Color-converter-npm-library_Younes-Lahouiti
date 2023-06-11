@@ -126,6 +126,7 @@ var AbstractConversionMethods = /** @class */ (function () {
                 }
             }
         }
+        console.log(hue);
         // Round the values and multiply saturation and lightness by 100
         var roundedHue = Math.round(hue * 360) % 360;
         var roundedSaturation = Math.round(saturation * 100);
@@ -426,7 +427,7 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             default: {
-                throw new Error("Invalid color model.");
+                throw new Error("Invalid color model for \"".concat(this.currentModel, "\""));
             }
         }
     };
@@ -436,7 +437,7 @@ var ColorConverter = /** @class */ (function (_super) {
      */
     ColorConverter.prototype.setNewColor = function (newColor, newTargetModel) {
         this.color = newColor;
-        this.currentModel = newTargetModel;
+        this.currentModel = newTargetModel.toLowerCase();
         this.normalizeToRgb();
     };
     /**
@@ -470,7 +471,7 @@ var ColorConverter = /** @class */ (function (_super) {
                 return this.fromHexToName(hexColor);
             }
             default: {
-                throw new Error("Invalid color model.");
+                throw new Error("Invalid color model for \"".concat(this.currentModel, "\""));
             }
         }
     };

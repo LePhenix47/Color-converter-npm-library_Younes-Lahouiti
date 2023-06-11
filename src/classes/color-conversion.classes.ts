@@ -152,6 +152,8 @@ export class AbstractConversionMethods {
       }
     }
 
+    console.log(hue);
+
     // Round the values and multiply saturation and lightness by 100
     const roundedHue: number = Math.round(hue * 360) % 360;
     const roundedSaturation: number = Math.round(saturation * 100);
@@ -546,7 +548,7 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       default: {
-        throw new Error("Invalid color model.");
+        throw new Error(`Invalid color model for "${this.currentModel}"`);
       }
     }
   }
@@ -558,7 +560,7 @@ export class ColorConverter extends AbstractConversionMethods {
   setNewColor(newColor: ColorRepresentation, newTargetModel: string): void {
     this.color = newColor;
 
-    this.currentModel = newTargetModel;
+    this.currentModel = newTargetModel.toLowerCase();
 
     this.normalizeToRgb();
   }
@@ -599,7 +601,7 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       default: {
-        throw new Error("Invalid color model.");
+        throw new Error(`Invalid color model for "${this.currentModel}"`);
       }
     }
   }
