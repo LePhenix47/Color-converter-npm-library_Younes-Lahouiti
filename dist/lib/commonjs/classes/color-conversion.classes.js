@@ -29,14 +29,32 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {string} The color in hexadecimal format.
      */
     AbstractConversionMethods.prototype.fromRgbToHex = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("red") ||
+            !color.hasOwnProperty("green") ||
+            !color.hasOwnProperty("blue");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: red, green or blue");
+        }
         var red = color.red, green = color.green, blue = color.blue;
-        var hexadecimalRed = red.toString(16).length < 2 ? "0".concat(red.toString(16)) : red.toString(16);
-        var hexadecimalGreen = green.toString(16).length < 2
-            ? "0".concat(green.toString(16))
-            : green.toString(16);
-        var hexadecimalBlue = blue.toString(16).length < 2
-            ? "0".concat(blue.toString(16))
-            : blue.toString(16);
+        var argumentsAreInvalid = !Number.isInteger(red) ||
+            !Number.isInteger(green) ||
+            !Number.isInteger(blue) ||
+            red < 0 ||
+            red > 255 ||
+            green < 0 ||
+            green > 255 ||
+            blue < 0 ||
+            blue > 255;
+        if (argumentsAreInvalid) {
+            throw new Error("Invalid RGB color values. Expected integers between 0 and 255, but received: red=".concat(red, ", green=").concat(green, ", blue=").concat(blue));
+        }
+        var hexadecimalRed = toBase16(red).length < 2 ? "0".concat(toBase16(red)) : toBase16(red);
+        var hexadecimalGreen = toBase16(green).length < 2 ? "0".concat(toBase16(green)) : toBase16(green);
+        var hexadecimalBlue = toBase16(blue).length < 2 ? "0".concat(toBase16(blue)) : toBase16(blue);
+        function toBase16(number) {
+            return number.toString(16);
+        }
         return "#".concat(hexadecimalRed).concat(hexadecimalGreen).concat(hexadecimalBlue);
     };
     /**
@@ -45,26 +63,22 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {RedGreenBlue} The RGB color object.
      */
     AbstractConversionMethods.prototype.fromHexToRgb = function (color) {
-        var colorArgumentIsInvalid = (color === null || color === void 0 ? void 0 : color.length) < 6 || (color === null || color === void 0 ? void 0 : color.length) > 7;
+        var colorArgumentIsInvalid = typeof color !== "string" || (color === null || color === void 0 ? void 0 : color.length) < 6 || (color === null || color === void 0 ? void 0 : color.length) > 7;
         if (colorArgumentIsInvalid) {
             throw new Error("Error: Unexpected color argument length passed, was expecting a 6 or 7 characters long string but instead got ".concat(color.length));
         }
-        var hexColor = color;
-        var hasHashTag = color.charAt(0) === "#";
-        if (hasHashTag) {
-            hexColor = color.slice(1);
-        }
+        var hexColor = color.charAt(0) === "#" ? color.slice(1) : color;
         var redBase16 = hexColor.substring(0, 2);
         var greeBase16 = hexColor.substring(2, 4);
         var blueBase16 = hexColor.substring(4, 6);
         var base16NumbersArray = [redBase16, greeBase16, blueBase16];
+        var base10NumbersArrays = [];
         for (var i = 0; i < base16NumbersArray.length; i++) {
             var colorBase16 = base16NumbersArray[i];
-            base16NumbersArray[i] = Number("0x".concat(colorBase16));
+            var colorBase10 = Number("0x".concat(colorBase16));
+            base10NumbersArrays.push(colorBase10);
         }
-        var redBase10 = Number(base16NumbersArray[0]);
-        var greenBase10 = Number(base16NumbersArray[1]);
-        var blueBase10 = Number(base16NumbersArray[2]);
+        var redBase10 = base10NumbersArrays[0], greenBase10 = base10NumbersArrays[1], blueBase10 = base10NumbersArrays[2];
         return { red: redBase10, green: greenBase10, blue: blueBase10 };
     };
     /**
@@ -73,6 +87,13 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {HueSaturationLightness} The HSL color object.
      */
     AbstractConversionMethods.prototype.fromRgbToHsl = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("red") ||
+            !color.hasOwnProperty("green") ||
+            !color.hasOwnProperty("blue");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: red, green or blue");
+        }
         var red = color.red, green = color.green, blue = color.blue;
         var argumentsAreInvalid = !Number.isInteger(red) ||
             !Number.isInteger(green) ||
@@ -126,7 +147,6 @@ var AbstractConversionMethods = /** @class */ (function () {
                 }
             }
         }
-        console.log(hue);
         // Round the values and multiply saturation and lightness by 100
         var roundedHue = Math.round(hue * 360) % 360;
         var roundedSaturation = Math.round(saturation * 100);
@@ -144,9 +164,26 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {RedGreenBlue} The RGB color object.
      */
     AbstractConversionMethods.prototype.fromHslToRgb = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("hue") ||
+            !color.hasOwnProperty("saturation") ||
+            !color.hasOwnProperty("lightness");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: hue, saturation or lightness");
+        }
         var hue = color.hue, saturation = color.saturation, lightness = color.lightness;
         var normalizedSaturation = saturation / 100;
         var normalizedLightness = lightness / 100;
+        /**
+         * Calculates the color component based on the given color value.
+         * The color component represents the intensity of a specific color (red, green, or blue)
+         * in the RGB color model.
+         *
+         * @link https://en.wikipedia.org/wiki/Color_space
+         *
+         * @param {number} colorValue - The color value to calculate the component for.
+         * @returns {number} - The calculated color component.
+         */
         function calculateComponent(colorValue) {
             var colorComponent = (colorValue + hue / 30) % 12;
             var chroma = normalizedSaturation *
@@ -167,7 +204,26 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {HueWhitenessBlackness} The HWB color object.
      */
     AbstractConversionMethods.prototype.fromRgbToHwb = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("red") ||
+            !color.hasOwnProperty("green") ||
+            !color.hasOwnProperty("blue");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: red, green or blue");
+        }
         var red = color.red, green = color.green, blue = color.blue;
+        var argumentsAreInvalid = !Number.isInteger(red) ||
+            !Number.isInteger(green) ||
+            !Number.isInteger(blue) ||
+            red < 0 ||
+            red > 255 ||
+            green < 0 ||
+            green > 255 ||
+            blue < 0 ||
+            blue > 255;
+        if (argumentsAreInvalid) {
+            throw new Error("Invalid RGB color values. Expected integers between 0 and 255, but received: red=".concat(red, ", green=").concat(green, ", blue=").concat(blue));
+        }
         var normalizedRed = red / 255;
         var normalizedGreen = green / 255;
         var normalizedBlue = blue / 255;
@@ -186,6 +242,13 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {RedGreenBlue} The RGB color object.
      */
     AbstractConversionMethods.prototype.fromHwbToRgb = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("hue") ||
+            !color.hasOwnProperty("whiteness") ||
+            !color.hasOwnProperty("blackness");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: hue, whiteness or blackness");
+        }
         var hue = color.hue, whiteness = color.whiteness, blackness = color.blackness;
         var normalizedWhiteness = whiteness / 100;
         var normalizedBlackness = blackness / 100;
@@ -224,7 +287,26 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {HueSaturationValue} The HSV color object.
      */
     AbstractConversionMethods.prototype.fromRgbToHsv = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("red") ||
+            !color.hasOwnProperty("green") ||
+            !color.hasOwnProperty("blue");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: red, green or blue");
+        }
         var red = color.red, green = color.green, blue = color.blue;
+        var argumentsAreInvalid = !Number.isInteger(red) ||
+            !Number.isInteger(green) ||
+            !Number.isInteger(blue) ||
+            red < 0 ||
+            red > 255 ||
+            green < 0 ||
+            green > 255 ||
+            blue < 0 ||
+            blue > 255;
+        if (argumentsAreInvalid) {
+            throw new Error("Invalid RGB color values. Expected integers between 0 and 255, but received: red=".concat(red, ", green=").concat(green, ", blue=").concat(blue));
+        }
         var min = Math.min(red, green, blue);
         var max = Math.max(red, green, blue);
         var hue = this.fromRgbToHsl(color).hue;
@@ -242,6 +324,13 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {RedGreenBlue} The RGB color object.
      */
     AbstractConversionMethods.prototype.fromHsvToRgb = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("hue") ||
+            !color.hasOwnProperty("saturation") ||
+            !color.hasOwnProperty("value");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: hue, saturation or value");
+        }
         var hue = color.hue, saturation = color.saturation, value = color.value;
         // Normalize saturation and value to the range of 0-1
         var normalizedSaturation = saturation / 100;
@@ -302,7 +391,26 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {CyanMagentaYellowKey} The CMYK color object.
      */
     AbstractConversionMethods.prototype.fromRgbToCmyk = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("red") ||
+            !color.hasOwnProperty("green") ||
+            !color.hasOwnProperty("blue");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: red, green or blue");
+        }
         var red = color.red, green = color.green, blue = color.blue;
+        var argumentsAreInvalid = !Number.isInteger(red) ||
+            !Number.isInteger(green) ||
+            !Number.isInteger(blue) ||
+            red < 0 ||
+            red > 255 ||
+            green < 0 ||
+            green > 255 ||
+            blue < 0 ||
+            blue > 255;
+        if (argumentsAreInvalid) {
+            throw new Error("Invalid RGB color values. Expected integers between 0 and 255, but received: red=".concat(red, ", green=").concat(green, ", blue=").concat(blue));
+        }
         var normalizedRed = red / 255;
         var normalizedGreen = green / 255;
         var normalizedBlue = blue / 255;
@@ -319,6 +427,14 @@ var AbstractConversionMethods = /** @class */ (function () {
      * @returns {RedGreenBlue} The RGB color object.
      */
     AbstractConversionMethods.prototype.fromCmykToRgb = function (color) {
+        var hasNotNecessaryProperties = !color.hasOwnProperty("cyan") ||
+            !color.hasOwnProperty("magenta") ||
+            !color.hasOwnProperty("yellow") ||
+            !color.hasOwnProperty("key");
+        // Verify color object properties
+        if (hasNotNecessaryProperties) {
+            throw new Error("Invalid color object. Missing required properties: cyan, magenta, yellow or key ");
+        }
         var cyan = color.cyan, magenta = color.magenta, yellow = color.yellow, key = color.key;
         var normalizedCyan = cyan / 100;
         var normalizedMagenta = magenta / 100;
@@ -342,10 +458,8 @@ var AbstractConversionMethods = /** @class */ (function () {
                 ? "not a string"
                 : "has wrong hex length: ".concat(color.length)));
         }
-        var normalizedColor = color.toLowerCase();
-        normalizedColor = normalizedColor.includes("#")
-            ? normalizedColor.slice(1)
-            : normalizedColor;
+        var normalizedColor = color.charAt(0) === "#" ? color.slice(1) : color;
+        normalizedColor = normalizedColor.toLowerCase();
         var nameColorObject = color_names_variables_1.colorArray.find(function (currentNameColorObject) {
             var hexValue = currentNameColorObject.hexValue;
             var normalizedHexValue = hexValue.toLowerCase();
