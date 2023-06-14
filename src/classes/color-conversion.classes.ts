@@ -686,9 +686,14 @@ export class ColorConverter extends AbstractConversionMethods {
   private normalizeToRgb(): RedGreenBlue | void {
     const unitREGEX: RegExp = /deg|°|%/g;
 
-    let values = (this.color as string).split("(")[1];
-    values = values.slice(0, values.length - 1);
-    values = values.replace(unitREGEX, "");
+    const isString: boolean = typeof this.color === "string";
+    let values: string = "";
+
+    if (isString) {
+      values = (this.color as string).split("(")[1];
+      values = values.slice(0, values.length - 1);
+      values = values.replace(unitREGEX, "");
+    }
 
     switch (this.currentModel) {
       case "hex": {
@@ -697,7 +702,6 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       case "rgb": {
-        const isString: boolean = typeof this.color === "string";
         if (isString) {
           const [red, green, blue] = values.split(",");
 
@@ -713,7 +717,6 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       case "hsl": {
-        const isString: boolean = typeof this.color === "string";
         if (isString) {
           const [hue, saturation, lightness] = values.split(",");
 
@@ -730,7 +733,6 @@ export class ColorConverter extends AbstractConversionMethods {
         break;
       }
       case "hwb": {
-        const isString: boolean = typeof this.color === "string";
         if (isString) {
           const [hue, whiteness, blackness] = values.split(",");
 
@@ -747,7 +749,6 @@ export class ColorConverter extends AbstractConversionMethods {
         break;
       }
       case "hsv": {
-        const isString: boolean = typeof this.color === "string";
         if (isString) {
           const [hue, saturation, value] = values.split(",");
 
@@ -765,7 +766,6 @@ export class ColorConverter extends AbstractConversionMethods {
       }
 
       case "cmyk": {
-        const isString: boolean = typeof this.color === "string";
         if (isString) {
           const [cyan, magenta, yellow, key] = values.split(",");
 

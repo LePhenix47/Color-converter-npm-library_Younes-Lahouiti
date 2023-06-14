@@ -517,16 +517,19 @@ var ColorConverter = /** @class */ (function (_super) {
      */
     ColorConverter.prototype.normalizeToRgb = function () {
         var unitREGEX = /deg|°|%/g;
-        var values = this.color.split("(")[1];
-        values = values.slice(0, values.length - 1);
-        values = values.replace(unitREGEX, "");
+        var isString = typeof this.color === "string";
+        var values = "";
+        if (isString) {
+            values = this.color.split("(")[1];
+            values = values.slice(0, values.length - 1);
+            values = values.replace(unitREGEX, "");
+        }
         switch (this.currentModel) {
             case "hex": {
                 this.normalizedColor = this.fromHexToRgb(this.color);
                 break;
             }
             case "rgb": {
-                var isString = typeof this.color === "string";
                 if (isString) {
                     var _a = values.split(","), red = _a[0], green = _a[1], blue = _a[2];
                     this.color = {
@@ -539,7 +542,6 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "hsl": {
-                var isString = typeof this.color === "string";
                 if (isString) {
                     var _b = values.split(","), hue = _b[0], saturation = _b[1], lightness = _b[2];
                     this.color = {
@@ -552,7 +554,6 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "hwb": {
-                var isString = typeof this.color === "string";
                 if (isString) {
                     var _c = values.split(","), hue = _c[0], whiteness = _c[1], blackness = _c[2];
                     this.color = {
@@ -565,7 +566,6 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "hsv": {
-                var isString = typeof this.color === "string";
                 if (isString) {
                     var _d = values.split(","), hue = _d[0], saturation = _d[1], value = _d[2];
                     this.color = {
@@ -578,7 +578,6 @@ var ColorConverter = /** @class */ (function (_super) {
                 break;
             }
             case "cmyk": {
-                var isString = typeof this.color === "string";
                 if (isString) {
                     var _e = values.split(","), cyan = _e[0], magenta = _e[1], yellow = _e[2], key = _e[3];
                     this.color = {
