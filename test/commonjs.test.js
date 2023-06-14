@@ -16,8 +16,7 @@ const {
 // const converter1 = new ColorConverter("rgb", color);
 
 // const color = { hue: 200, saturation: 28, lightness: 35 };
-const color = "hsl(200, 28, 35)";
-const converter1 = new ColorConverter("hsl", color);
+const converter1 = new ColorConverter("hsl", "(200, 28, 35)");
 
 // const color = { hue: 200, whiteness: 25, blackness: 55 };
 // const converter1 = new ColorConverter("hwb", color);
