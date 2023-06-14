@@ -499,7 +499,7 @@ var ColorConverter = /** @class */ (function (_super) {
     /**
      * Constructs a ColorConverter object.
      * @param {string} currentModel - The current color model.
-     * @param {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} color - The color value.
+     * @param {ColorRepresentation} color - The color value.
      */
     function ColorConverter(currentModel, color) {
         var _this = _super.call(this) || this;
@@ -513,28 +513,78 @@ var ColorConverter = /** @class */ (function (_super) {
      * @returns {RedGreenBlue} The normalized RGB color value.
      */
     ColorConverter.prototype.normalizeToRgb = function () {
+        var unitREGEX = /deg|°|%/g;
+        var values = this.color.split("(")[1];
+        values = values.slice(0, values.length - 1);
+        values = values.replace(unitREGEX, "");
         switch (this.currentModel) {
             case "hex": {
                 this.normalizedColor = this.fromHexToRgb(this.color);
                 break;
             }
             case "rgb": {
+                var isString = typeof this.color === "string";
+                if (isString) {
+                    var _a = values.split(","), red = _a[0], green = _a[1], blue = _a[2];
+                    this.color = {
+                        red: Number(red),
+                        green: Number(green),
+                        blue: Number(blue),
+                    };
+                }
                 this.normalizedColor = this.color;
                 break;
             }
             case "hsl": {
+                var isString = typeof this.color === "string";
+                if (isString) {
+                    var _b = values.split(","), hue = _b[0], saturation = _b[1], lightness = _b[2];
+                    this.color = {
+                        hue: Number(hue),
+                        saturation: Number(saturation),
+                        lightness: Number(lightness),
+                    };
+                }
                 this.normalizedColor = this.fromHslToRgb(this.color);
                 break;
             }
             case "hwb": {
+                var isString = typeof this.color === "string";
+                if (isString) {
+                    var _c = values.split(","), hue = _c[0], whiteness = _c[1], blackness = _c[2];
+                    this.color = {
+                        hue: Number(hue),
+                        whiteness: Number(whiteness),
+                        blackness: Number(blackness),
+                    };
+                }
                 this.normalizedColor = this.fromHwbToRgb(this.color);
                 break;
             }
             case "hsv": {
+                var isString = typeof this.color === "string";
+                if (isString) {
+                    var _d = values.split(","), hue = _d[0], saturation = _d[1], value = _d[2];
+                    this.color = {
+                        hue: Number(hue),
+                        saturation: Number(saturation),
+                        value: Number(value),
+                    };
+                }
                 this.normalizedColor = this.fromHsvToRgb(this.color);
                 break;
             }
             case "cmyk": {
+                var isString = typeof this.color === "string";
+                if (isString) {
+                    var _e = values.split(","), cyan = _e[0], magenta = _e[1], yellow = _e[2], key = _e[3];
+                    this.color = {
+                        cyan: Number(cyan),
+                        magenta: Number(magenta),
+                        yellow: Number(yellow),
+                        key: Number(key),
+                    };
+                }
                 this.normalizedColor = this.fromCmykToRgb(this.color);
                 break;
             }
@@ -560,32 +610,54 @@ var ColorConverter = /** @class */ (function (_super) {
     /**
      * Converts the color to the specified color model.
      * @param {string} targetModel - The target color model.
-     * @returns {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} The converted color value.
+     * @returns {ColorRepresentation} The converted color value.
      */
-    ColorConverter.prototype.convertTo = function (targetModel) {
+    ColorConverter.prototype.convertTo = function (targetModel, needToStringify) {
+        if (needToStringify === void 0) { needToStringify = false; }
         targetModel = targetModel.toLowerCase();
         switch (targetModel) {
             case "hex": {
                 return this.fromRgbToHex(this.normalizedColor);
             }
             case "rgb": {
-                return this.normalizedColor;
+                var _a = this.normalizedColor, red = _a.red, green = _a.green, blue = _a.blue;
+                if (needToStringify) {
+                    return "rgb(".concat(red, ", ").concat(green, ", ").concat(blue, ")");
+                }
+                return { red: red, green: green, blue: blue };
             }
             case "hsl": {
-                return this.fromRgbToHsl(this.normalizedColor);
+                var _b = this.fromRgbToHsl(this.normalizedColor), hue = _b.hue, saturation = _b.saturation, lightness = _b.lightness;
+                if (needToStringify) {
+                    return "hsl(".concat(hue, "\u00B0, ").concat(saturation, "%, ").concat(lightness, "%)");
+                }
+                return { hue: hue, saturation: saturation, lightness: lightness };
             }
             case "hwb": {
-                return this.fromRgbToHwb(this.normalizedColor);
+                var _c = this.fromRgbToHwb(this.normalizedColor), hue = _c.hue, whiteness = _c.whiteness, blackness = _c.blackness;
+                if (needToStringify) {
+                    return "hwb(".concat(hue, "\u00B0, ").concat(whiteness, "%, ").concat(blackness, "%)");
+                }
+                return { hue: hue, whiteness: whiteness, blackness: blackness };
             }
             case "hsv": {
-                return this.fromRgbToHsv(this.normalizedColor);
+                var _d = this.fromRgbToHsv(this.normalizedColor), hue = _d.hue, saturation = _d.saturation, value = _d.value;
+                if (needToStringify) {
+                    return "hsv(".concat(hue, "\u00B0, ").concat(saturation, "%, ").concat(value, "%)");
+                }
+                return { hue: hue, saturation: saturation, value: value };
             }
             case "cmyk": {
-                return this.fromRgbToCmyk(this.normalizedColor);
+                var _e = this.fromRgbToCmyk(this.normalizedColor), cyan = _e.cyan, magenta = _e.magenta, yellow = _e.yellow, key = _e.key;
+                if (needToStringify) {
+                    return "cmyk(".concat(cyan, "%, ").concat(magenta, "%, ").concat(yellow, "%, ").concat(key, "%)");
+                }
+                return { cyan: cyan, magenta: magenta, yellow: yellow, key: key };
             }
             case "name": {
                 var hexColor = this.fromRgbToHex(this.normalizedColor);
-                return this.fromHexToName(hexColor);
+                var name_1 = this.fromHexToName(hexColor);
+                return name_1;
             }
             default: {
                 throw new Error("Invalid color model for \"".concat(this.currentModel, "\""));
@@ -596,7 +668,8 @@ var ColorConverter = /** @class */ (function (_super) {
      * Retrieves all color models for the current color.
      * @returns {Array} An array containing the color values in different color models.
      */
-    ColorConverter.prototype.getAllColorModels = function () {
+    ColorConverter.prototype.getAllColorModels = function (needToStringify) {
+        if (needToStringify === void 0) { needToStringify = false; }
         var hexColor = this.fromRgbToHex(this.normalizedColor);
         var rgbColor = this.normalizedColor;
         var hslColor = this.fromRgbToHsl(this.normalizedColor);
@@ -604,6 +677,17 @@ var ColorConverter = /** @class */ (function (_super) {
         var hsvColor = this.fromRgbToHsv(this.normalizedColor);
         var cmykColor = this.fromRgbToCmyk(this.normalizedColor);
         var nameColor = this.fromHexToName(hexColor);
+        if (needToStringify) {
+            return [
+                nameColor || "N/A",
+                hexColor,
+                "rgb(".concat(rgbColor.red, "\u00B0, ").concat(rgbColor.green, "%, ").concat(rgbColor.blue, "%)"),
+                "hsl(".concat(hslColor.hue, "\u00B0, ").concat(hslColor.saturation, "%, ").concat(hslColor.lightness, "%)"),
+                "hwb(".concat(hwbColor.hue, "\u00B0, ").concat(hwbColor.whiteness, "%, ").concat(hwbColor.blackness, "%)"),
+                "hsv(".concat(hsvColor.hue, "\u00B0, ").concat(hsvColor.saturation, "%, ").concat(hsvColor.value, "%)"),
+                "cmyk(".concat(cmykColor.cyan, "\u00B0, ").concat(cmykColor.magenta, "%, ").concat(cmykColor.yellow, "%, ").concat(cmykColor.key, "%)"),
+            ];
+        }
         return [
             nameColor,
             hexColor,

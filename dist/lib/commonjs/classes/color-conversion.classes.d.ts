@@ -86,7 +86,7 @@ export declare class ColorConverter extends AbstractConversionMethods {
     /**
      * Constructs a ColorConverter object.
      * @param {string} currentModel - The current color model.
-     * @param {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} color - The color value.
+     * @param {ColorRepresentation} color - The color value.
      */
     constructor(currentModel: string, color: ColorRepresentation);
     /**
@@ -102,12 +102,12 @@ export declare class ColorConverter extends AbstractConversionMethods {
     /**
      * Converts the color to the specified color model.
      * @param {string} targetModel - The target color model.
-     * @returns {string|RedGreenBlue|HueSaturationLightness|HueWhitenessBlackness|HueSaturationValue} The converted color value.
+     * @returns {ColorRepresentation} The converted color value.
      */
-    convertTo(targetModel: string): ColorRepresentation;
+    convertTo(targetModel: string, needToStringify?: boolean): ColorRepresentation;
     /**
      * Retrieves all color models for the current color.
      * @returns {Array} An array containing the color values in different color models.
      */
-    getAllColorModels(): ColorRepresentation[];
+    getAllColorModels(needToStringify?: boolean): ColorRepresentation[];
 }
