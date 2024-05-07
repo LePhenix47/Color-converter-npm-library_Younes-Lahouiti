@@ -30,3 +30,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# compiled files
+/lib
+/dist
+
+# compiled files
+/lib
+/dist
